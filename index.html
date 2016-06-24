@@ -8,6 +8,7 @@
     html,body{
       height:100%;
       margin:0;
+      background-color: #000;
     }
     #thecanvas {
       height: auto;
@@ -34,32 +35,76 @@
       animation-duration:1.0s;
     }
 
+    .bottom-right {
+      position: absolute;
+      right:    20px;
+      bottom:   20px;
+    }
+
+    #thebutton {
+      /*display: inline-block;*/
+      /*width: 200px;*/
+      display: none;
+      padding: 8px;
+      color: #fff;
+      border: 2px solid #fff;
+      border-radius: 5px;
+      text-align: center;
+      outline: none;
+      text-decoration: none;
+      transition: background-color 0.2s ease-out,
+                  border-color 0.2s ease-out;
+    }
+
+    #thebutton:hover,
+    #thebutton:active {
+      background-color: #fff; /* fallback */
+      background-color: rgba(255, 255, 255, 0.4);
+      border-color: #fff; /* fallback */
+      border-color: rgba(255, 255, 255, 0.4);
+      transition: background-color 0.3s ease-in,
+                  border-color 0.3s ease-in;
+    }
+
   </style>
 </head>
 <body>
-  <div id="thecanvas">
+  <div id="thecanvas" class="loader">
+    <a id="thebutton" class="bottom-right" href="#" onclick="load();">Another please!</a>
   </div>
 </body>
 
 <script type="text/javascript">
 
-  //costruzione dell'url
-  var url = new UnsplashPhoto().all()
-                 .width(Math.round(window.innerWidth*0.9))
-                 .height(Math.round(window.innerHeight*0.9))
-                 .fromCategory("nature")
-                 .of("cat")
-                 //.randomize("daily")
-                 .fetch();
+  function load() {
+    console.log('carico...');
+    document.getElementById('thecanvas').style.background = '';
+    document.getElementById("thecanvas").className = '';
+    document.getElementById('thebutton').style.display='none';
 
-  var img = new Image();
-  img.onload = function () {
-    document.getElementById('thecanvas').style.background = 'url('+img.src+') no-repeat center/cover fixed';
-    document.getElementById("thecanvas").className += " fade-in";
-  };
+    //costruzione dell'url
+    var url = new UnsplashPhoto().all()
+                   .width(Math.round(window.innerWidth*0.9))
+                   .height(Math.round(window.innerHeight*0.9))
+                   .fromCategory("nature")
+                   .of("cat")
+                   //.randomize("daily")
+                   .fetch();
 
-  //caricamento dell'immagine
-  img.src = url;
+    url += '='+new Date().getTime(); //trick per forzare il reload del background
+
+    var img = new Image();
+    img.onload = function () {
+      document.getElementById('thecanvas').style.background = 'url('+img.src+') no-repeat center/cover fixed';
+      document.getElementById("thecanvas").className = 'fade-in';
+      document.getElementById('thebutton').style.display='inline-block';
+    };
+
+    //caricamento dell'immagine
+    img.src = url;
+  }
+
+  load();
 
 </script>
 
